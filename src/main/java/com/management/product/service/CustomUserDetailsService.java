@@ -1,4 +1,4 @@
-package com.management.product.config.security;
+package com.management.product.service;
 
 import com.management.product.entities.UserInfo;
 import com.management.product.repository.UserInfoRepository;
