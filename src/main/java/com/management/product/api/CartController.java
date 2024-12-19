@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 public interface CartController {
     String URI_ID_PRODUCT = "/{idProduct}";
+    String URI_QUANTITY_REQUESTED = "/{quantityRequested}";
     String PATH_VARIABLE_ID_PRODUCT = "idProduct";
-    @PostMapping(value =URI_ID_PRODUCT+"/cart" )
-    ResponseEntity<ShoppedProductDto> addProductToCart(@PathVariable(name = PATH_VARIABLE_ID_PRODUCT) Long idProduct);
-
-
+    String PATH_VARIABLE_QUANTITY_REQUESTED = "quantityRequested";
+    @PostMapping(value =URI_ID_PRODUCT+URI_QUANTITY_REQUESTED+"/cart" )
+    ResponseEntity<ShoppedProductDto> addProductToCart(@PathVariable(name = PATH_VARIABLE_ID_PRODUCT) Long idProduct,@PathVariable(name= PATH_VARIABLE_QUANTITY_REQUESTED) Integer quantityRequested);
 }

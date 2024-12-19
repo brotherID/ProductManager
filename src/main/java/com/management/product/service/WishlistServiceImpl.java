@@ -7,7 +7,7 @@ import com.management.product.mapper.ProductMapper;
 import com.management.product.mapper.WishListProductMapper;
 import com.management.product.repository.ProductRepository;
 import com.management.product.repository.WishListProductRepository;
-import com.management.product.repository.WishlistRespository;
+import com.management.product.repository.WishlistRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -24,17 +24,11 @@ import static org.zalando.problem.Status.NOT_FOUND;
 @RequiredArgsConstructor
 @Slf4j
 public class WishlistServiceImpl implements  WishlistService{
-
     public static final String MESSAGE_DETAIL_PRODUCT_ID_NOT_EXIST = "Product with idProduct %s does not exist !";
-
-    private final WishlistRespository wishlistRespository;
-
+    private final WishlistRepository wishlistRepository;
     private final WishListProductRepository wishListProductRepository;
-
     private final WishListProductMapper wishListProductMapper;
-
     private final ProductRepository productRepository;
-
     private final ProductMapper productMapper;
 
 
@@ -57,11 +51,11 @@ public class WishlistServiceImpl implements  WishlistService{
     }
 
     public Wishlist getWishListOfAuthenticatedUser(String email){
-        return  wishlistRespository.findByEmail(email)
+        return  wishlistRepository.findByEmail(email)
                 .orElseGet(() -> {
                     Wishlist wishlist = new Wishlist();
                     wishlist.setEmail(email);
-                    return wishlistRespository.save(wishlist);
+                    return wishlistRepository.save(wishlist);
                 });
     }
 
@@ -76,7 +70,7 @@ public class WishlistServiceImpl implements  WishlistService{
     public List<ProductDto> getProductsOfWishlistUser() {
         log.info("getProductsOfWishlistUser() ...");
         Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
-        List<WishListProduct> wishListProducts=wishlistRespository.findByEmail(currentAuth.getName())
+        List<WishListProduct> wishListProducts=wishlistRepository.findByEmail(currentAuth.getName())
                 .map(Wishlist::getIdWishlist)
                 .map(wishListProductRepository::findByIdWishlist)
                 .orElse(List.of());

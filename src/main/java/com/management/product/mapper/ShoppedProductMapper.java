@@ -7,13 +7,10 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface ShoppedProductMapper {
-
     @Mapping(source = "idShoppedProduct", target = "idShoppedProduct")
     @Mapping(source = "idCart", target = "idCart")
     @Mapping(source = "idProduct", target = "idProduct")
     ShoppedProduct toShoppedProduct(ShoppedProductDto shoppedProductDto);
-
-
     @Mapping(source = "idShoppedProduct", target = "idShoppedProduct")
     @Mapping(source = "idCart", target = "idCart")
     @Mapping(source = "idProduct", target = "idProduct")

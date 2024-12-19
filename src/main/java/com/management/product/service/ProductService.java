@@ -6,16 +6,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ProductService {
-
     ProductDto createProduct(ProductDto productDto);
-
     List<ProductDto> getAllProduct();
-
-    Optional<ProductDto> getProduct(Long idProduct);
-
+    Optional<ProductDto> getProductById(Long idProduct);
     ProductDto updateProductById(Long idProduct,ProductDto productDto);
-
-    boolean  removeProductById(Long idProduct);
-
+    void  removeProductById(Long idProduct);
     boolean isAdmin();
 }

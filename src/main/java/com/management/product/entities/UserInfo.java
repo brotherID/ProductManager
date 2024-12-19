@@ -12,7 +12,6 @@ import lombok.ToString;
 @Entity
 @RequiredArgsConstructor
 public class UserInfo  extends Auditable {
-
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;

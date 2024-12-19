@@ -32,7 +32,6 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((authorize) -> {
                     authorize.requestMatchers("/api/authentication/**").permitAll();
@@ -42,12 +41,9 @@ public class SecurityConfig {
                     authorize.requestMatchers(HttpMethod.GET, "/v3/api-docs/**").permitAll();
                     authorize.anyRequest().authenticated();
                 }).httpBasic(Customizer.withDefaults());
-
         http.exceptionHandling( exception -> exception
                 .authenticationEntryPoint(authenticationEntryPoint));
-
         http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 

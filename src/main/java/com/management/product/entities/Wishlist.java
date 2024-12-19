@@ -12,7 +12,6 @@ import lombok.ToString;
 @Entity
 @RequiredArgsConstructor
 public class Wishlist extends Auditable  {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String   idWishlist;

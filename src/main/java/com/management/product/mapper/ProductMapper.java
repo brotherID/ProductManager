@@ -9,7 +9,6 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
-
      @Mapping(source = "codeProduct", target = "codeProduct")
      @Mapping(source = "nameProduct", target = "nameProduct")
      @Mapping(source = "descriptionProduct", target = "descriptionProduct")
@@ -22,7 +21,6 @@ public interface ProductMapper {
      @Mapping(source = "inventoryStatus", target = "inventoryStatus")
      @Mapping(source = "ratingProduct", target = "ratingProduct")
      ProductDto fromEntity(Product product);
-
      @Mapping(source = "codeProduct", target = "codeProduct")
      @Mapping(source = "nameProduct", target = "nameProduct")
      @Mapping(source = "descriptionProduct", target = "descriptionProduct")
@@ -35,12 +33,6 @@ public interface ProductMapper {
      @Mapping(source = "inventoryStatus", target = "inventoryStatus")
      @Mapping(source = "ratingProduct", target = "ratingProduct")
      Product toEntity(ProductDto productDto);
-
-
-
      List<Product> toProductList(List<ProductDto> productDtos);
-
      List<ProductDto> toProductDtoList(List<Product> products);
-
-
 }

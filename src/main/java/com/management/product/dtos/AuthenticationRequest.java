@@ -1,4 +1,4 @@
-package com.management.product.config.security;
+package com.management.product.dtos;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

@@ -9,17 +9,21 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.zalando.problem.Problem;
 
 import java.util.List;
 import java.util.Optional;
+
+import static org.zalando.problem.Status.NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class ProductServiceImpl implements  ProductService{
 
+    public static final String PRODUCT_NOT_FOUNDED = "product  not founded";
+    public static final String DETAIL_PRODUCT_NOT_FOUNDED = "the product with id  %s not founded";
     private final ProductMapper productMapper;
-
     private  final ProductRepository productRepository;
 
     @Override
@@ -34,13 +38,19 @@ public class ProductServiceImpl implements  ProductService{
     }
 
     @Override
-    public Optional<ProductDto> getProduct(Long idProduct) {
+    public Optional<ProductDto> getProductById(Long idProduct) {
         return productRepository.findById(idProduct).map(productMapper::fromEntity);
     }
 
+
     @Override
     public ProductDto updateProductById(Long idProduct, ProductDto productDto) {
-        Product product =  productRepository.findById(idProduct).orElseThrow(()-> new RuntimeException("Product not founded with idProduct :"+idProduct));
+        Product product =  productRepository.findById(idProduct)
+                .orElseThrow(()-> Problem.builder()
+                        .withTitle(PRODUCT_NOT_FOUNDED)
+                        .withStatus(NOT_FOUND)
+                        .withDetail(String.format(DETAIL_PRODUCT_NOT_FOUNDED, idProduct))
+                        .build());
         product.setCodeProduct(productDto.getCodeProduct());
         product.setNameProduct(productDto.getNameProduct());
         product.setCategoryProduct(productDto.getCategoryProduct());
@@ -56,16 +66,19 @@ public class ProductServiceImpl implements  ProductService{
     }
 
     @Override
-    public boolean removeProductById(Long idProduct) {
-        Product product =  productRepository.findById(idProduct).orElseThrow(()-> new RuntimeException("Product not founded with idProduct :"+idProduct));
+    public void  removeProductById(Long idProduct) {
+        Product product =  productRepository.findById(idProduct)
+                .orElseThrow(()-> Problem.builder()
+                        .withTitle(PRODUCT_NOT_FOUNDED)
+                        .withStatus(NOT_FOUND)
+                        .withDetail(String.format(DETAIL_PRODUCT_NOT_FOUNDED, idProduct))
+                        .build());
         productRepository.deleteById(idProduct);
-        return true;
     }
 
     @Override
     public boolean isAdmin() {
         Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("Utilisateur connecté : " + currentAuth.getName());
         return "admin@admin.com".equals(currentAuth.getName());
     }
 

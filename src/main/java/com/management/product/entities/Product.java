@@ -14,7 +14,6 @@ import lombok.ToString;
 @Entity
 @RequiredArgsConstructor
 public class Product extends Auditable {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idProduct;
@@ -30,5 +29,4 @@ public class Product extends Auditable {
     @Enumerated(EnumType.STRING)
     private InventoryStatus inventoryStatus;
     private Integer ratingProduct;
-
 }

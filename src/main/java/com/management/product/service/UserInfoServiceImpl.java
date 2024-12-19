@@ -17,11 +17,9 @@ import static org.zalando.problem.Status.CONFLICT;
 public class UserInfoServiceImpl implements UserInfoService {
 
     public static final String USER_FOUNDED = "User founded";
-    public static final String USER_EXIST = "The user with id %s  exist.";
+    public static final String USER_EXIST = "The user with email %s  exist.";
     private final UserInfoRepository userInfoRepository;
-
     private final UserInfoMapper userInfoMapper;
-
     private final PasswordEncoder passwordEncoder;
 
     @Override

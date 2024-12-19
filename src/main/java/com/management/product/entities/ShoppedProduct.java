@@ -19,5 +19,4 @@ public class ShoppedProduct  extends Auditable {
     private Long idShoppedProduct;
     private Long idCart;
     private Long idProduct;
-
 }

@@ -1,4 +1,4 @@
-package com.management.product.config.security;
+package com.management.product.dtos;
 
 import lombok.*;
 
@@ -8,6 +8,4 @@ import lombok.*;
 @AllArgsConstructor
 public class AuthenticationResponse {
     private String token;
-
-
 }

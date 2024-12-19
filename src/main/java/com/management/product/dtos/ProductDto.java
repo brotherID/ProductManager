@@ -3,7 +3,6 @@ package com.management.product.dtos;
 import com.management.product.enums.InventoryStatus;
 import lombok.*;
 
-import java.sql.Timestamp;
 
 @Setter
 @Getter
@@ -11,7 +10,6 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductDto {
-
     private String   codeProduct;
     private String   nameProduct;
     private String   descriptionProduct;
@@ -23,5 +21,4 @@ public class ProductDto {
     private Integer  shellIdProduct;
     private InventoryStatus inventoryStatus;
     private Integer  ratingProduct;
-
 }

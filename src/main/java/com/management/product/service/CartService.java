@@ -7,10 +7,6 @@ import com.management.product.dtos.ShoppedProductDto;
 import java.util.List;
 
 public interface CartService {
-
-    ShoppedProductDto addProductToCart(Long idProduct);
-
+    ShoppedProductDto addProductToCart(Long idProduct,Integer quantityRequested);
     List<ProductDto> getProductsOfCartUser();
-
-
 }

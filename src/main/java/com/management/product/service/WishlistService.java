@@ -6,8 +6,6 @@ import com.management.product.dtos.WishListProductDto;
 import java.util.List;
 
 public interface WishlistService {
-
     WishListProductDto addProductToWishlist(Long idProduct);
-
     List<ProductDto> getProductsOfWishlistUser();
 }

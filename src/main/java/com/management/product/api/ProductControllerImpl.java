@@ -1,7 +1,6 @@
 package com.management.product.api;
 
 import com.management.product.dtos.ProductDto;
-import com.management.product.entities.Wishlist;
 import com.management.product.service.CartService;
 import com.management.product.service.ProductService;
 import com.management.product.service.WishlistService;
@@ -15,8 +14,7 @@ import org.zalando.problem.Problem;
 import java.net.URI;
 import java.util.List;
 
-import static org.zalando.problem.Status.NOT_FOUND;
-import static org.zalando.problem.Status.UNAUTHORIZED;
+import static org.zalando.problem.Status.*;
 
 
 @RestController
@@ -26,17 +24,14 @@ public class ProductControllerImpl implements ProductController {
     public static final String PRODUCT_NOT_FOUND = "PRODUCT NOT FOUND";
     public static final String UNAUTHORIZED_ACCESS = "Unauthorized Access";
     public static final String THE_USER_IS_NOT_AUTHORIZED = "The user is not authorized.";
+    public static final String THE_PRODUCT_NOT_FOUNDED = "The product with id %s not founded.";
+    public static final String ERROR_PRODUCTS = "error in getting products";
+    public static final String ERROR__FETCHING_PRODUCTS = "Error occurred while fetching products ";
     private final ProductService productService;
     private final CartService cartService;
     private final WishlistService wishlistService;
-
-
-
-
     @Override
-    public ResponseEntity<?> addProduct(ProductDto productDto) {
-
-
+    public ResponseEntity<ProductDto> addProduct(ProductDto productDto) {
             if(productService.isAdmin()){
                 ProductDto product = productService.createProduct(productDto);
                 URI location = ServletUriComponentsBuilder
@@ -47,41 +42,43 @@ public class ProductControllerImpl implements ProductController {
                         .created(location)
                         .body(product);
             }else{
-
                 throw Problem.builder()
                         .withTitle(UNAUTHORIZED_ACCESS)
                         .withStatus(UNAUTHORIZED)
                         .withDetail(THE_USER_IS_NOT_AUTHORIZED)
                         .build();
             }
-
     }
 
 
     @Override
-    public ResponseEntity<?> getProducts() {
+    public ResponseEntity<List<ProductDto>> getProducts() {
         try {
             return ResponseEntity.ok(productService.getAllProduct());
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body("error in getting products : " + e.getMessage());
+
+            throw Problem.builder()
+                .withTitle(ERROR_PRODUCTS)
+                .withStatus(CONFLICT)
+                .withDetail(ERROR__FETCHING_PRODUCTS +e.getMessage())
+                .build();
         }
     }
 
     @Override
-    public ResponseEntity<?> getProductById(Long idProduct) {
-        return productService.getProduct(idProduct)
+    public ResponseEntity<ProductDto> getProductById(Long idProduct) {
+        return productService.getProductById(idProduct)
                 .map(ResponseEntity::ok)
                 .orElseThrow(() -> Problem.builder()
                         .withTitle(PRODUCT_NOT_FOUND)
                         .withStatus(NOT_FOUND)
-                        .withDetail(String.format("The product with id %s not founded.", idProduct))
+                        .withDetail(String.format(THE_PRODUCT_NOT_FOUNDED, idProduct))
                         .build());
     }
 
 
     @Override
-    public ResponseEntity<?> updateProductById(Long idProduct, ProductDto productDto) {
-
+    public ResponseEntity<ProductDto> updateProductById(Long idProduct, ProductDto productDto) {
             if(productService.isAdmin()){
                 return ResponseEntity.ok(productService.updateProductById(idProduct, productDto));
             }else{
@@ -91,14 +88,13 @@ public class ProductControllerImpl implements ProductController {
                         .withDetail(THE_USER_IS_NOT_AUTHORIZED)
                         .build();
             }
-
     }
 
     @Override
-    public ResponseEntity<?> deleteProductById(Long  idProduct) {
-
+    public ResponseEntity<Void> deleteProductById(Long  idProduct) {
             if(productService.isAdmin()){
-                return ResponseEntity.ok(productService.removeProductById(idProduct));
+                productService.removeProductById(idProduct);
+                return ResponseEntity.noContent().build();
             }else {
                 throw Problem.builder()
                         .withTitle(UNAUTHORIZED_ACCESS)
@@ -106,7 +102,6 @@ public class ProductControllerImpl implements ProductController {
                         .withDetail(THE_USER_IS_NOT_AUTHORIZED)
                         .build();
             }
-
     }
 
     @Override
@@ -118,6 +113,4 @@ public class ProductControllerImpl implements ProductController {
     public ResponseEntity<List<ProductDto>> getProductsOfWishlistUser() {
         return ResponseEntity.ok(wishlistService.getProductsOfWishlistUser());
     }
-
-
 }

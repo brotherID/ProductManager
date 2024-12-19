@@ -11,7 +11,6 @@ import lombok.ToString;
 @ToString
 @RequiredArgsConstructor
 public class WishlistDto {
-
-    private String   idWishlist;
+    private String idWishlist;
     private String email;
 }

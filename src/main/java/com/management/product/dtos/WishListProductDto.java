@@ -10,7 +10,6 @@ import lombok.ToString;
 @ToString
 @RequiredArgsConstructor
 public class WishListProductDto {
-
     private String idWishListProduct;
     private String idWishlist;
     private Long idProduct;

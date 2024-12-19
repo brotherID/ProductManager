@@ -12,28 +12,18 @@ public interface ProductController {
     String URI_ID_PRODUCT = "/{idProduct}";
     String URI_CART_USER = "/cart-user";
     String URI_WISH_LIST = "/wish-list";
-
     @PostMapping()
-    ResponseEntity<?> addProduct(@RequestBody ProductDto productDto);
+    ResponseEntity<ProductDto> addProduct(@RequestBody ProductDto productDto);
     @GetMapping()
-    ResponseEntity<?> getProducts();
+    ResponseEntity<List<ProductDto>> getProducts();
     @GetMapping(value = URI_ID_PRODUCT)
-    ResponseEntity<?> getProductById(@PathVariable(name = PATH_VARIABLE_ID_PRODUCT) Long idProduct);
+    ResponseEntity<ProductDto> getProductById(@PathVariable(name = PATH_VARIABLE_ID_PRODUCT) Long idProduct);
     @PatchMapping(value = URI_ID_PRODUCT)
-    ResponseEntity<?> updateProductById(@PathVariable(name = PATH_VARIABLE_ID_PRODUCT) Long idProduct , @RequestBody ProductDto productDto);
+    ResponseEntity<ProductDto> updateProductById(@PathVariable(name = PATH_VARIABLE_ID_PRODUCT) Long idProduct , @RequestBody ProductDto productDto);
     @DeleteMapping(value = URI_ID_PRODUCT)
-    ResponseEntity<?> deleteProductById(@PathVariable(name = PATH_VARIABLE_ID_PRODUCT) Long idProduct );
-
-
+    ResponseEntity<Void> deleteProductById(@PathVariable(name = PATH_VARIABLE_ID_PRODUCT) Long idProduct );
     @GetMapping(value = URI_CART_USER)
     ResponseEntity<List<ProductDto>> getProductsOfCartUser();
-
     @GetMapping(value = URI_WISH_LIST)
     ResponseEntity<List<ProductDto>> getProductsOfWishlistUser();
-
-
-
-
-
-
 }

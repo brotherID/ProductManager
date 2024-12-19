@@ -1,7 +1,7 @@
 package com.management.product.api;
 
-import com.management.product.config.security.AuthenticationRequest;
-import com.management.product.config.security.AuthenticationResponse;
+import com.management.product.dtos.AuthenticationRequest;
+import com.management.product.dtos.AuthenticationResponse;
 import com.management.product.config.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,12 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RequiredArgsConstructor
 public class AuthenticationControllerImpl implements AuthenticationController{
-
-
     private  final AuthenticationManager authenticationManager;
-
     private  final JwtTokenProvider jwtUtil;
-
     public ResponseEntity<?> getToken( AuthenticationRequest authenticationRequest) {
         log.info("Begin getToken : {}", authenticationRequest.toString());
         Authentication authentication;

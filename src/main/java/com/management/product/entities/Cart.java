@@ -15,12 +15,10 @@ import java.time.LocalDateTime;
 @Entity
 @RequiredArgsConstructor
 public class Cart extends Auditable{
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idCart;
     private LocalDateTime expirationDate;
     @Column(unique = true)
     private String email;
-
 }

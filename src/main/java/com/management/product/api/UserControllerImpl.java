@@ -12,10 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/v1/users")
 @RequiredArgsConstructor
 public class UserControllerImpl implements UserController{
-
     private final UserInfoService userInfoService;
-
-
     @Override
     public ResponseEntity<UserInfoDtoResponse> addUser(UserInfoDto userInfoDto) {
         return ResponseEntity.ok(userInfoService.addUser(userInfoDto));
