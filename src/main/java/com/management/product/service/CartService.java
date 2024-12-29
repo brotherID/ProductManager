@@ -1,12 +1,12 @@
 package com.management.product.service;
 
 
-import com.management.product.dtos.ProductDto;
-import com.management.product.dtos.ShoppedProductDto;
+import com.management.product.dtos.cart.ShoppedProductResponse;
+import com.management.product.dtos.product.ProductResponse;
 
 import java.util.List;
 
 public interface CartService {
-    ShoppedProductDto addProductToCart(Long idProduct,Integer quantityRequested);
-    List<ProductDto> getProductsOfCartUser();
+    ShoppedProductResponse addProductToCart(Long idProduct,Integer quantityRequested);
+    List<ProductResponse> getProductsOfCartUser();
 }

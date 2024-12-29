@@ -1,11 +1,11 @@
 package com.management.product.service;
 
-import com.management.product.dtos.ProductDto;
-import com.management.product.dtos.WishListProductDto;
+import com.management.product.dtos.wish.WishListProductResponse;
+import com.management.product.dtos.product.ProductResponse;
 
 import java.util.List;
 
 public interface WishlistService {
-    WishListProductDto addProductToWishlist(Long idProduct);
-    List<ProductDto> getProductsOfWishlistUser();
+    WishListProductResponse addProductToWishlist(Long idProduct);
+    List<ProductResponse> getProductsOfWishlistUser();
 }

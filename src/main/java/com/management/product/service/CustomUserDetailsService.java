@@ -1,7 +1,7 @@
 package com.management.product.service;
 
-import com.management.product.entities.UserInfo;
-import com.management.product.repository.UserInfoRepository;
+import com.management.product.entities.user.UserInfo;
+import com.management.product.repository.user.UserInfoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,11 +15,12 @@ import java.util.ArrayList;
 @Component
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
+    public static final String USER_NOT_EXISTS_BY_USERNAME_OR_EMAIL = "User not exists by Username or Email";
     private final UserInfoRepository userRepository;
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         UserInfo user = userRepository.findByEmail(email) .orElseThrow(() ->
-                new UsernameNotFoundException("User not exists by Username or Email"));
+                new UsernameNotFoundException(USER_NOT_EXISTS_BY_USERNAME_OR_EMAIL));
         return new User(
                 email,
                 user.getPassword(),

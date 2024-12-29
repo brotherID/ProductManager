@@ -1,13 +1,15 @@
 package com.management.product.service;
 
-import com.management.product.dtos.ProductDto;
-import com.management.product.dtos.WishListProductDto;
-import com.management.product.entities.*;
-import com.management.product.mapper.ProductMapper;
-import com.management.product.mapper.WishListProductMapper;
-import com.management.product.repository.ProductRepository;
-import com.management.product.repository.WishListProductRepository;
-import com.management.product.repository.WishlistRepository;
+import com.management.product.dtos.wish.WishListProductResponse;
+import com.management.product.dtos.product.ProductResponse;
+import com.management.product.entities.product.Product;
+import com.management.product.entities.wish.WishListProduct;
+import com.management.product.entities.wish.Wishlist;
+import com.management.product.mapper.product.ProductMapper;
+import com.management.product.mapper.wish.WishListProductMapper;
+import com.management.product.repository.product.ProductRepository;
+import com.management.product.repository.wish.product.WishListProductRepository;
+import com.management.product.repository.wish.user.WishlistRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -18,7 +20,7 @@ import org.zalando.problem.Problem;
 import java.util.List;
 import java.util.Optional;
 
-import static com.management.product.api.ProductControllerImpl.PRODUCT_NOT_FOUND;
+import static com.management.product.web.product.ProductControllerImpl.PRODUCT_NOT_FOUND;
 import static org.zalando.problem.Status.NOT_FOUND;
 @Service
 @RequiredArgsConstructor
@@ -34,7 +36,7 @@ public class WishlistServiceImpl implements  WishlistService{
 
 
     @Override
-    public WishListProductDto addProductToWishlist(Long idProduct) {
+    public WishListProductResponse addProductToWishlist(Long idProduct) {
         log.info("addProductToWishlist()[idProduct :{}] Begin ...", idProduct);
         Product productToAdd = productRepository.findById(idProduct).orElseThrow(() -> {
             throw Problem.builder()
@@ -59,27 +61,27 @@ public class WishlistServiceImpl implements  WishlistService{
                 });
     }
 
-    public WishListProductDto addProductToWishList(String  idWishList, Long idProduct){
+    public WishListProductResponse addProductToWishList(String  idWishList, Long idProduct){
         WishListProduct  wishListProduct = new WishListProduct();
         wishListProduct.setIdWishlist(idWishList);
         wishListProduct.setIdProduct(idProduct);
-        return wishListProductMapper.toWishListProductDto(wishListProductRepository.save(wishListProduct));
+        return wishListProductMapper.toWishListProductResponse(wishListProductRepository.save(wishListProduct));
     }
 
     @Override
-    public List<ProductDto> getProductsOfWishlistUser() {
+    public List<ProductResponse> getProductsOfWishlistUser() {
         log.info("getProductsOfWishlistUser() ...");
         Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
         List<WishListProduct> wishListProducts=wishlistRepository.findByEmail(currentAuth.getName())
                 .map(Wishlist::getIdWishlist)
                 .map(wishListProductRepository::findByIdWishlist)
                 .orElse(List.of());
-        List<ProductDto> productDtoList = wishListProducts.stream()
+        List<ProductResponse> productDtoList = wishListProducts.stream()
                 .map(WishListProduct::getIdProduct)
                 .map(productRepository::findById)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .map(productMapper::fromEntity)
+                .map(productMapper::toProductResponse)
                 .toList();
         log.info("getProductsOfWishlistUser() Done");
         return productDtoList;

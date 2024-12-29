@@ -20,5 +20,11 @@ spring:
 
 product:
   inventory:
-    number: 10
+    low:
+      stock: 10
+
+cart:
+  expiration:
+    date: 15
+
 

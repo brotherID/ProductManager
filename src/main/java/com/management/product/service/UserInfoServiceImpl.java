@@ -1,10 +1,10 @@
 package com.management.product.service;
 
-import com.management.product.dtos.UserInfoDto;
-import com.management.product.dtos.UserInfoDtoResponse;
-import com.management.product.entities.UserInfo;
-import com.management.product.mapper.UserInfoMapper;
-import com.management.product.repository.UserInfoRepository;
+import com.management.product.dtos.user.UserInfoRequest;
+import com.management.product.dtos.user.UserInfoResponse;
+import com.management.product.entities.user.UserInfo;
+import com.management.product.mapper.user.UserInfoMapper;
+import com.management.product.repository.user.UserInfoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,8 +23,8 @@ public class UserInfoServiceImpl implements UserInfoService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public UserInfoDtoResponse addUser(UserInfoDto userInfoDto) {
-        userInfoRepository.findByEmail(userInfoDto.getEmail())
+    public UserInfoResponse addUser(UserInfoRequest userInfoRequest) {
+        userInfoRepository.findByEmail(userInfoRequest.getEmail())
                 .ifPresent(userInfoFound -> {
                     throw Problem.builder()
                             .withTitle(USER_FOUNDED)
@@ -32,8 +32,8 @@ public class UserInfoServiceImpl implements UserInfoService {
                             .withDetail(String.format(USER_EXIST, userInfoFound.getEmail()))
                             .build();
                 });
-        userInfoDto.setPassword(passwordEncoder.encode(userInfoDto.getPassword()));
-        UserInfo userInfo = userInfoRepository.save(userInfoMapper.toUserInfo(userInfoDto));
-        return userInfoMapper.toUserInfoDtoResponse(userInfo);
+        userInfoRequest.setPassword(passwordEncoder.encode(userInfoRequest.getPassword()));
+        UserInfo userInfo = userInfoRepository.save(userInfoMapper.toUserInfo(userInfoRequest));
+        return userInfoMapper.toUserInfoResponse(userInfo);
     }
 }

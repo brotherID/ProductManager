@@ -1,17 +1,24 @@
 package com.management.product.service;
 
-import com.management.product.dtos.ProductDto;
-import com.management.product.entities.Product;
-import com.management.product.mapper.ProductMapper;
-import com.management.product.repository.ProductRepository;
+import com.management.product.dtos.product.ProductDetailResponse;
+import com.management.product.dtos.product.ProductRequest;
+import com.management.product.dtos.product.ProductResponse;
+import com.management.product.entities.product.Product;
+import com.management.product.enums.InventoryStatus;
+import com.management.product.mapper.product.ProductMapper;
+import com.management.product.repository.product.ProductCriteriaRepository;
+import com.management.product.repository.product.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.zalando.problem.Problem;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.zalando.problem.Status.NOT_FOUND;
@@ -27,41 +34,27 @@ public class ProductServiceImpl implements  ProductService{
     private  final ProductRepository productRepository;
 
     @Override
-    public ProductDto createProduct(ProductDto productDto) {
-        Product product = productMapper.toEntity(productDto);
+    public ProductDetailResponse createProduct(ProductRequest productRequest) {
+        Product product = productMapper.toEntity(productRequest);
         return productMapper.fromEntity(productRepository.save(product));
     }
 
-    @Override
-    public List<ProductDto> getAllProduct() {
-        return productMapper.toProductDtoList(productRepository.findAll());
-    }
 
     @Override
-    public Optional<ProductDto> getProductById(Long idProduct) {
+    public Optional<ProductDetailResponse> getProductById(Long idProduct) {
         return productRepository.findById(idProduct).map(productMapper::fromEntity);
     }
 
 
     @Override
-    public ProductDto updateProductById(Long idProduct, ProductDto productDto) {
+    public ProductDetailResponse updateProductById(Long idProduct, ProductRequest productRequest) {
         Product product =  productRepository.findById(idProduct)
                 .orElseThrow(()-> Problem.builder()
                         .withTitle(PRODUCT_NOT_FOUNDED)
                         .withStatus(NOT_FOUND)
                         .withDetail(String.format(DETAIL_PRODUCT_NOT_FOUNDED, idProduct))
                         .build());
-        product.setCodeProduct(productDto.getCodeProduct());
-        product.setNameProduct(productDto.getNameProduct());
-        product.setCategoryProduct(productDto.getCategoryProduct());
-        product.setImageProduct(productDto.getImageProduct());
-        product.setDescriptionProduct(productDto.getDescriptionProduct());
-        product.setPriceProduct(productDto.getPriceProduct());
-        product.setQuantityProduct(productDto.getQuantityProduct());
-        product.setInternalReferenceProduct(productDto.getInternalReferenceProduct());
-        product.setShellIdProduct(productDto.getShellIdProduct());
-        product.setInventoryStatus(productDto.getInventoryStatus());
-        product.setRatingProduct(productDto.getRatingProduct());
+        productMapper.updateEntity(product, productRequest);
         return productMapper.fromEntity(productRepository.save(product));
     }
 
@@ -81,6 +74,20 @@ public class ProductServiceImpl implements  ProductService{
         Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
         return "admin@admin.com".equals(currentAuth.getName());
     }
+
+    @Override
+    public Page<ProductResponse> getProducts(String nameProduct,int page, int size, InventoryStatus inventoryStatus, boolean sortDesc) {
+        Sort sort = sortDesc ? Sort.by("createdAt").descending() : Sort.by("createdAt").ascending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        return productMapper.toDtoPage(productRepository.findAll(
+                ProductCriteriaRepository.filterByCriteria(nameProduct, inventoryStatus),
+                pageable
+        ));
+    }
+
+
+
 
 
 }

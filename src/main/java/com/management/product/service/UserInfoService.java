@@ -1,8 +1,8 @@
 package com.management.product.service;
 
-import com.management.product.dtos.UserInfoDto;
-import com.management.product.dtos.UserInfoDtoResponse;
+import com.management.product.dtos.user.UserInfoRequest;
+import com.management.product.dtos.user.UserInfoResponse;
 
 public interface UserInfoService {
-    UserInfoDtoResponse addUser(UserInfoDto userInfoDto);
+    UserInfoResponse addUser(UserInfoRequest userInfoRequest);
 }
