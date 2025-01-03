@@ -2,6 +2,10 @@ server:
   port: 9999
 
 spring:
+    cache:
+      cache-names: products
+      caffeine:
+         spec: maximumSize=500, expireAfterAccess=60m
     datasource:
       driver-class-name: org.postgresql.Driver
       password: Sar@
@@ -18,6 +22,7 @@ spring:
           format_sql: true
       show-sql: true
 
+
 product:
   inventory:
     low:
@@ -26,5 +31,6 @@ product:
 cart:
   expiration:
     date: 15
+
 
 

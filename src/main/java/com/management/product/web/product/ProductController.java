@@ -16,7 +16,7 @@ public interface ProductController {
     String URI_ID_PRODUCT = "/{idProduct}";
     String URI_CART_USER = "/cart-user";
     String URI_WISH_LIST = "/wish-list";
-    @PostMapping()
+    @PostMapping
     ResponseEntity<ProductDetailResponse> addProduct(@RequestBody ProductRequest productRequest);
     @GetMapping(value = URI_ID_PRODUCT)
     ResponseEntity<ProductDetailResponse> getProductById(@PathVariable(name = PATH_VARIABLE_ID_PRODUCT) Long idProduct);

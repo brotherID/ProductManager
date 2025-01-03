@@ -1,5 +1,6 @@
 package com.management.product.service;
 
+import com.management.product.config.cache.CustomKeyGenerator;
 import com.management.product.dtos.product.ProductDetailResponse;
 import com.management.product.dtos.product.ProductRequest;
 import com.management.product.dtos.product.ProductResponse;
@@ -10,6 +11,10 @@ import com.management.product.repository.product.ProductCriteriaRepository;
 import com.management.product.repository.product.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,28 +31,35 @@ import static org.zalando.problem.Status.NOT_FOUND;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@CacheConfig(cacheNames = {"products"})
 public class ProductServiceImpl implements  ProductService{
 
     public static final String PRODUCT_NOT_FOUNDED = "product  not founded";
     public static final String DETAIL_PRODUCT_NOT_FOUNDED = "the product with id  %s not founded";
     private final ProductMapper productMapper;
     private  final ProductRepository productRepository;
+    private final CustomKeyGenerator customKeyGenerator;
 
+    @CachePut(keyGenerator = "customKeyGenerator")
     @Override
     public ProductDetailResponse createProduct(ProductRequest productRequest) {
         Product product = productMapper.toEntity(productRequest);
         return productMapper.fromEntity(productRepository.save(product));
     }
 
-
+    @Cacheable(keyGenerator = "customKeyGenerator")
     @Override
     public Optional<ProductDetailResponse> getProductById(Long idProduct) {
-        return productRepository.findById(idProduct).map(productMapper::fromEntity);
+        log.info("Begin getProductById , idProduct :  {}",idProduct);
+        return productRepository.findById(idProduct)
+                .map(productMapper::fromEntity);
     }
 
 
+    @CachePut(keyGenerator = "customKeyGenerator")
     @Override
     public ProductDetailResponse updateProductById(Long idProduct, ProductRequest productRequest) {
+        log.info("Begin updateProductById , idProduct :  {} , [{}]",idProduct,productRequest.toString());
         Product product =  productRepository.findById(idProduct)
                 .orElseThrow(()-> Problem.builder()
                         .withTitle(PRODUCT_NOT_FOUNDED)
@@ -58,14 +70,17 @@ public class ProductServiceImpl implements  ProductService{
         return productMapper.fromEntity(productRepository.save(product));
     }
 
+    @CacheEvict(value = "products", key = "#idProduct",allEntries = true)
     @Override
     public void  removeProductById(Long idProduct) {
         Product product =  productRepository.findById(idProduct)
-                .orElseThrow(()-> Problem.builder()
+                .orElseThrow(
+                        ()-> Problem.builder()
                         .withTitle(PRODUCT_NOT_FOUNDED)
                         .withStatus(NOT_FOUND)
                         .withDetail(String.format(DETAIL_PRODUCT_NOT_FOUNDED, idProduct))
-                        .build());
+                        .build()
+                );
         productRepository.deleteById(idProduct);
     }
 
@@ -75,6 +90,7 @@ public class ProductServiceImpl implements  ProductService{
         return "admin@admin.com".equals(currentAuth.getName());
     }
 
+    @Cacheable(keyGenerator = "customKeyGenerator")
     @Override
     public Page<ProductResponse> getProducts(String nameProduct,int page, int size, InventoryStatus inventoryStatus, boolean sortDesc) {
         Sort sort = sortDesc ? Sort.by("createdAt").descending() : Sort.by("createdAt").ascending();
@@ -85,9 +101,4 @@ public class ProductServiceImpl implements  ProductService{
                 pageable
         ));
     }
-
-
-
-
-
 }

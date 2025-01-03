@@ -3,6 +3,7 @@ package com.management.product.service;
 import com.management.product.entities.user.UserInfo;
 import com.management.product.repository.user.UserInfoRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
